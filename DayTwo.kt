@@ -10,14 +10,52 @@ fun main() {
     val scores = br.lines().toList().map {
 
         val opponentChoice = it.first()
-        val opponentChoiceScore = when(opponentChoice) {
+        val opponentChoiceScore = when (opponentChoice) {
+            'A' -> 1
+            'C' -> 3
+            else -> 2
+        }
+
+        val outcome = it.last()
+        val winLoseOrDraw = when (outcome) {
+            'X' -> 0
+            'Y' -> 3
+            else -> 6
+        }
+
+        val choiceScore = when {
+            winLoseOrDraw == 0 && opponentChoiceScore == 1 -> 3
+            winLoseOrDraw == 0 && opponentChoiceScore == 3 -> 2
+            winLoseOrDraw == 0 && opponentChoiceScore == 2 -> 1
+
+            winLoseOrDraw == 6 && opponentChoiceScore == 1 -> 2
+            winLoseOrDraw == 6 && opponentChoiceScore == 3 -> 1
+            winLoseOrDraw == 6 && opponentChoiceScore == 2 -> 3
+
+            else -> opponentChoiceScore
+        }
+
+        val total = choiceScore + winLoseOrDraw
+        println("$it = ${total}")
+        total
+    }
+
+    println("Total scores = ${scores.sum()}")
+
+}
+
+private fun partOne(br: BufferedReader): List<Int> {
+    val scores = br.lines().toList().map {
+
+        val opponentChoice = it.first()
+        val opponentChoiceScore = when (opponentChoice) {
             'A' -> 1
             'C' -> 3
             else -> 2
         }
 
         val choice = it.last()
-        val choiceScore = when(choice) {
+        val choiceScore = when (choice) {
             'X' -> 1
             'Z' -> 3
             else -> 2
@@ -31,10 +69,8 @@ fun main() {
             else -> 0
         }
         val total = choiceScore + winLoseOrDraw
-        println("$it = ${total}" )
+        println("$it = ${total}")
         total
     }
-
-    println("Total scores = ${scores.sum()}")
-
+    return scores
 }
