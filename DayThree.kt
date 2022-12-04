@@ -16,7 +16,7 @@ fun main() {
         val group = elves.subList(previous, count)
 
         group[0].find {
-            group[1].contains(it, ignoreCase = false) && group[2].contains(it, ignoreCase = false)
+            it in group[1] && it in group[2]
         }?.let {
             badges.add(it)
             println("Group number ${count / 3} with Badge = $it")
@@ -40,7 +40,7 @@ private fun partOne(br: BufferedReader, ranks: MutableList<Int>) {
         val firstCompartment = it.take(it.length / 2)
         val secondCompartment = it.takeLast(it.length / 2)
         val repeatedItem = firstCompartment.firstOrNull { item ->
-            secondCompartment.contains(item, ignoreCase = false)
+            item in secondCompartment
         }
 
         if (repeatedItem != null) {
