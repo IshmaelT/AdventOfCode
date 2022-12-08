@@ -1,4 +1,5 @@
 import java.io.FileReader
+import java.util.*
 
 fun main() {
 
@@ -7,86 +8,57 @@ fun main() {
         .lines()
         .dropLast(1)
 
-    val map = mutableListOf<String>()
-
     val directories = mutableListOf<Dir>()
-    var children = mutableListOf<String>()
+    var subDirectories = mutableListOf<String>()
 
     var depth = 0
-    for ((index, line) in lines.withIndex()) {
+    val parents = Stack<String>().apply { push("") }
+    lines.forEach { line ->
         if ("$ cd " in line) {
-            children = mutableListOf<String>()
+            subDirectories = mutableListOf()
             val name = line.removePrefix("$ cd ")
             if (name == "..") {
+                parents.pop()
                 depth--
-                continue
+                return@forEach
             } else {
                 depth++
-                var space = ""
-                repeat(depth) {
-                    //print(" ")
-                    space += " "
-                }
-                //println(name)
                 if ("/" == name) {
-                    map.add(space + name)
-                    directories.add(Dir(name, depth, children))
+                    directories.add(Dir(name, depth, subDirectories, parents.peek()))
                 } else {
-                    map.add(space + name)
-                    directories.add(Dir(name, depth, children))
+                    directories.add(Dir(name, depth, subDirectories, parents.peek()))
                 }
-                continue
+                parents.push(name)
+                return@forEach
             }
         }
         if ("dir " in line) {
             val name = line.removePrefix("dir ")
-            var space = ""
-            repeat(depth) {
-                //print(" ")
-                space += " "
-            }
-            //println(name)
-            map.add(space + name)
-            children.add(name)
-            continue
+            subDirectories.add(name)
+            return@forEach
         }
         if (line.any { it.isDigit() }) {
             val name = line.substringBefore(" ")
-            var space = ""
-            repeat(depth) {
-                //print(" ")
-                space += " "
-            }
-            //println(name)
-            map.add(space + name)
-            children.add(name)
-            continue
+            subDirectories.add(name)
+            return@forEach
         }
     }
 
-    //directories.onEach { println(it) }
-
-    var total = 0
-    val sum = mutableSetOf<Int>()
-    for (directory in directories) {
-        val currentDir = totalOf(directories, directory)
-        if(currentDir <= 100000) {
-            total += currentDir
-            sum.add(currentDir)
-            println(directory)
-            println("${directory.name} = $currentDir")
+    directories
+        .onEach { println(it) }
+        .map { totalOf(directories, it) }
+        .filter { it <= 100000 }
+        .sum()
+        .also { total ->
+            println("sum of under 100 000 directories = $total")
         }
-    }
-
-    println()
-    println("sum of under 100 000 directories = $total or ${sum.sum()}")
-
 }
 
 data class Dir(
     val name: String,
     val depth: Int,
-    val subDirs: MutableList<String>
+    val subDirs: MutableList<String>,
+    val parent: String
 )
 
 fun totalOf(dirs: List<Dir>, startDir: Dir): Int {
@@ -95,8 +67,14 @@ fun totalOf(dirs: List<Dir>, startDir: Dir): Int {
         sum += if (subDir.isNotBlank() && subDir.trim().isInteger()) {
             subDir.toInt()
         } else {
-            val newDir = dirs.find { it.name == subDir && it.depth == startDir.depth + 1 }
-            totalOf(dirs, newDir!!)
+            val duplicates = dirs
+                .filter {
+                    it.name == subDir &&
+                            it.depth == startDir.depth + 1 &&
+                            it.parent == startDir.name
+                }
+            val newDir = duplicates.first()
+            totalOf(dirs, newDir)
         }
     }
     return sum
