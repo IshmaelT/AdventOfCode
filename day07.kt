@@ -24,11 +24,7 @@ fun main() {
                 return@forEach
             } else {
                 depth++
-                if ("/" == name) {
-                    directories.add(Dir(name, depth, subDirectories, parents.peek()))
-                } else {
-                    directories.add(Dir(name, depth, subDirectories, parents.peek()))
-                }
+                directories.add(Dir(name, depth, subDirectories, parents.peek()))
                 parents.push(name)
                 return@forEach
             }
