@@ -1,4 +1,5 @@
 import java.io.FileReader
+import java.text.NumberFormat
 import java.util.*
 
 fun main() {
@@ -45,12 +46,12 @@ fun main() {
     }
 
     directories
-        .onEach { println(it) }
+        //.onEach { println(it) }
         .map { totalOf(directories, it) }
         .filter { it <= 100000 }
         .sum()
         .also { total ->
-            println("sum of under 100 000 directories = $total")
+            println("Sum of directories <= 100000 is $total")
         }
 }
 
@@ -67,13 +68,12 @@ fun totalOf(dirs: List<Dir>, startDir: Dir): Int {
         sum += if (subDir.isNotBlank() && subDir.trim().isInteger()) {
             subDir.toInt()
         } else {
-            val duplicates = dirs
-                .filter {
+            val newDir = dirs
+                .first {
                     it.name == subDir &&
                             it.depth == startDir.depth + 1 &&
                             it.parent == startDir.name
                 }
-            val newDir = duplicates.first()
             totalOf(dirs, newDir)
         }
     }
