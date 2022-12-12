@@ -12,44 +12,39 @@ fun main() {
         val char: String = " . "
     )
 
+    fun Point.shiftY(tail: Point) {
+        if (y - tail.y > 0) {
+            tail.y += 1
+        } else if (tail.y - y > 0) {
+            tail.y -= 1
+        }
+    }
+
+    fun Point.shiftX(tail: Point) {
+        if (x - tail.x > 0) {
+            tail.x += 1
+        } else if (tail.x - x > 0) {
+            tail.x -= 1
+        }
+    }
+
     fun Point.follow(): Point {
         tail ?: return this
-        when {
-            x - tail.x > 1 -> {
-                if (y - tail.y > 0) {
-                    tail.y += 1
-                } else if (tail.y - y > 0) {
-                    tail.y -= 1
-                }
-                tail.x += 1
-            }
-
-            tail.x - x > 1 -> {
-                if (y - tail.y > 0) {
-                    tail.y += 1
-                } else if (tail.y - y > 0) {
-                    tail.y -= 1
-                }
-                tail.x -= 1
-            }
-
-            y - tail.y > 1 -> {
-                if (x - tail.x > 0) {
-                    tail.x += 1
-                } else if (tail.x - x > 0) {
-                    tail.x -= 1
-                }
-                tail.y += 1
-            }
-
-            tail.y - y > 1 -> {
-                if (x - tail.x > 0) {
-                    tail.x += 1
-                } else if (tail.x - x > 0) {
-                    tail.x -= 1
-                }
-                tail.y -= 1
-            }
+        if (x - tail.x > 1) {
+            shiftY(tail)
+            tail.x += 1
+        }
+        if (tail.x - x > 1) {
+            shiftY(tail)
+            tail.x -= 1
+        }
+        if (y - tail.y > 1) {
+            shiftX(tail)
+            tail.y += 1
+        }
+        if (tail.y - y > 1) {
+            shiftX(tail)
+            tail.y -= 1
         }
         return tail
     }
