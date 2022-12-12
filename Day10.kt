@@ -46,149 +46,48 @@ fun main() {
 
 }
 
-//val input = ("addx 15\n" +
-//        "addx -11\n" +
-//        "addx 6\n" +
-//        "addx -3\n" +
-//        "addx 5\n" +
-//        "addx -1\n" +
-//        "addx -8\n" +
-//        "addx 13\n" +
-//        "addx 4\n" +
-//        "noop\n" +
-//        "addx -1\n" +
-//        "addx 5\n" +
-//        "addx -1\n" +
-//        "addx 5\n" +
-//        "addx -1\n" +
-//        "addx 5\n" +
-//        "addx -1\n" +
-//        "addx 5\n" +
-//        "addx -1\n" +
-//        "addx -35\n" +
-//        "addx 1\n" +
-//        "addx 24\n" +
-//        "addx -19\n" +
-//        "addx 1\n" +
-//        "addx 16\n" +
-//        "addx -11\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "addx 21\n" +
-//        "addx -15\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "addx -3\n" +
-//        "addx 9\n" +
-//        "addx 1\n" +
-//        "addx -3\n" +
-//        "addx 8\n" +
-//        "addx 1\n" +
-//        "addx 5\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "addx -36\n" +
-//        "noop\n" +
-//        "addx 1\n" +
-//        "addx 7\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "addx 2\n" +
-//        "addx 6\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "addx 1\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "addx 7\n" +
-//        "addx 1\n" +
-//        "noop\n" +
-//        "addx -13\n" +
-//        "addx 13\n" +
-//        "addx 7\n" +
-//        "noop\n" +
-//        "addx 1\n" +
-//        "addx -33\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "addx 2\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "addx 8\n" +
-//        "noop\n" +
-//        "addx -1\n" +
-//        "addx 2\n" +
-//        "addx 1\n" +
-//        "noop\n" +
-//        "addx 17\n" +
-//        "addx -9\n" +
-//        "addx 1\n" +
-//        "addx 1\n" +
-//        "addx -3\n" +
-//        "addx 11\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "addx 1\n" +
-//        "noop\n" +
-//        "addx 1\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "addx -13\n" +
-//        "addx -19\n" +
-//        "addx 1\n" +
-//        "addx 3\n" +
-//        "addx 26\n" +
-//        "addx -30\n" +
-//        "addx 12\n" +
-//        "addx -1\n" +
-//        "addx 3\n" +
-//        "addx 1\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "addx -9\n" +
-//        "addx 18\n" +
-//        "addx 1\n" +
-//        "addx 2\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "addx 9\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "addx -1\n" +
-//        "addx 2\n" +
-//        "addx -37\n" +
-//        "addx 1\n" +
-//        "addx 3\n" +
-//        "noop\n" +
-//        "addx 15\n" +
-//        "addx -21\n" +
-//        "addx 22\n" +
-//        "addx -6\n" +
-//        "addx 1\n" +
-//        "noop\n" +
-//        "addx 2\n" +
-//        "addx 1\n" +
-//        "noop\n" +
-//        "addx -10\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "addx 20\n" +
-//        "addx 1\n" +
-//        "addx 2\n" +
-//        "addx 2\n" +
-//        "addx -6\n" +
-//        "addx -11\n" +
-//        "noop\n" +
-//        "noop\n" +
-//        "noop").lines()
+private fun part2(input: List<String>) {
+
+    operator fun String.component1() = substringBefore(" ")
+    operator fun String.component2() = substringAfter(" ").toIntOrNull() ?: 0
+    var index = 0
+    var register = 0
+    val screen = MutableList(40 * 6) { '.' }
+    var nextLine = 0
+    input.forEach { (instr, value) ->
+        when (instr) {
+            "addx" -> {
+                nextLine = (index / 40) * 40
+                if ((index) in (register + nextLine)..(register + nextLine + 2)) {
+                    screen[index] = '#'
+                } else {
+                    screen[index] = '.'
+                }
+                index++
+                if ((index) in (register + nextLine)..(register + nextLine + 2)) {
+                    screen[index] = '#'
+                } else {
+                    screen[index] = '.'
+                }
+                index++
+                register += value
+
+            }
+
+            "noop" -> {
+                nextLine = (index / 40) * 40
+                if ((index) in (register + nextLine)..(register + nextLine + 2)) {
+                    screen[index] = '#'
+                } else {
+                    screen[index] = '.'
+                }
+                index++
+            }
+        }
+    }
+
+    screen.chunked(40).forEach {
+        it.onEach { char -> print(char) }
+        println()
+    }
+}
