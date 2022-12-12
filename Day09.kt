@@ -1,4 +1,5 @@
 import java.io.FileReader
+
 fun main() {
     val input = FileReader("./day09/input.txt")
         .readText()
@@ -46,7 +47,7 @@ fun main() {
             shiftX(tail)
             tail.y -= 1
         }
-        return tail
+        return tail.follow()
     }
 
     val tail9th = Point(char = " 9 ")
@@ -65,18 +66,7 @@ fun main() {
     operator fun String.component1() = first()
     operator fun String.component2() = substringAfter(" ").toInt()
 
-    fun follow() {
-        val tail = head.follow() // 1
-            .follow() // 2
-            .follow() // 3
-            .follow() // 4
-            .follow() // 5
-            .follow() // 6
-            .follow() // 7
-            .follow() // 8
-            .follow() // 9
-        uniqueTailPath.add(tail.copy())
-    }
+    fun follow() = head.follow().also { uniqueTailPath.add(it.copy()) }
 
     input.forEach { (dir, steps) ->
         when (dir) {
